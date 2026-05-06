@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* GLOBAL BACKGROUND */
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+
+/* MAIN APP BACKGROUND */
+.app-bg {
+  @apply min-h-screen flex items-center justify-center 
+  bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 relative overflow-hidden;
+}
+
+/* Glow circles */
+.glow-1 {
+  @apply absolute w-72 h-72 bg-purple-400 rounded-full blur-3xl opacity-30 top-10 left-10;
+}
+
+.glow-2 {
+  @apply absolute w-72 h-72 bg-pink-400 rounded-full blur-3xl opacity-30 bottom-10 right-10;
+}
+
+/* Glass card */
+.card {
+  @apply bg-white/10 backdrop-blur-xl border border-white/20 
+  p-8 rounded-2xl shadow-2xl text-center;
+}
