@@ -3,8 +3,11 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import API_URL from "../api";
 
+const CATEGORY_OPTIONS = ["Programming", "Web Development", "Cyber Security"];
+
 function Admin() {
   const [question, setQuestion] = useState("");
+  const [category, setCategory] = useState("");
   const [options, setOptions] = useState("");
   const [answer, setAnswer] = useState("");
   const [questions, setQuestions] = useState([]);
@@ -31,7 +34,7 @@ function Admin() {
 
   // ➕ Add Question
   const handleAdd = () => {
-    if (!question || !options || !answer) {
+    if (!question || !category || !options || !answer) {
       alert("Fill all fields");
       return;
     }
@@ -39,11 +42,13 @@ function Admin() {
     axios
       .post(`${API_URL}/api/quiz`, {
         question: question.trim(),
+        category: category.trim(),
         options: options.split(",").map((option) => option.trim()).filter(Boolean),
         answer: answer.trim(),
       })
       .then(() => {
         setQuestion("");
+        setCategory("");
         setOptions("");
         setAnswer("");
         fetchQuestions();
@@ -85,13 +90,26 @@ function Admin() {
       <h2 className="text-2xl text-white mb-6">Admin Panel</h2>
 
       {/* FORM */}
-      <div className="flex gap-4 mb-6">
+      <div className="flex flex-col lg:flex-row gap-4 mb-6">
         <input
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="Question"
           className="flex-1 p-3 rounded-lg bg-white/20 text-white placeholder-gray-300 outline-none"
         />
+
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="flex-1 p-3 rounded-lg bg-cyan-500/20 text-white placeholder-cyan-100 outline-none border border-cyan-400/40"
+        >
+          <option value="" className="text-slate-900">Select Category</option>
+          {CATEGORY_OPTIONS.map((option) => (
+            <option key={option} value={option} className="text-slate-900">
+              {option}
+            </option>
+          ))}
+        </select>
 
         <input
           value={options}
@@ -124,6 +142,9 @@ function Admin() {
             className="flex justify-between items-center border-b border-white/20 py-3 hover:bg-white/10 transition"
           >
             <div className="flex-1">
+              <span className="inline-block mb-1 rounded bg-cyan-500/20 px-2 py-1 text-xs font-semibold text-cyan-200">
+                {q.category || "General"}
+              </span>
               <p className="text-white font-semibold">{q.question}</p>
               <p className="text-gray-300 text-sm">
                 {q.options.join(", ")}
