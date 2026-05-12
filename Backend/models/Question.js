@@ -4,7 +4,7 @@ const questionSchema = new mongoose.Schema({
   question: String,
   category: {
     type: String,
-    default: "General",
+    required: true,
     trim: true
   },
   options: [String],

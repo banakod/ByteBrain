@@ -7,11 +7,7 @@ const DEFAULT_CATEGORIES = ["Programming", "Web Development", "Cyber Security"];
 // GET questions, optionally filtered by category
 router.get("/", async (req, res) => {
   const { category } = req.query;
-  const filter = category
-    ? category === "General"
-      ? { $or: [{ category }, { category: { $exists: false } }] }
-      : { category }
-    : {};
+  const filter = category ? { category } : {};
   const data = await Question.find(filter);
   res.json(data);
 });
@@ -19,12 +15,10 @@ router.get("/", async (req, res) => {
 // GET all categories
 router.get("/categories", async (req, res) => {
   const categories = await Question.distinct("category");
-  const hasUncategorized = await Question.exists({ category: { $exists: false } });
-  const categoryList = [...DEFAULT_CATEGORIES, ...categories.filter(Boolean)];
-
-  if (hasUncategorized && !categoryList.includes("General")) {
-    categoryList.push("General");
-  }
+  const categoryList = [
+    ...DEFAULT_CATEGORIES,
+    ...categories.filter((category) => DEFAULT_CATEGORIES.includes(category)),
+  ];
 
   res.json([...new Set(categoryList)]);
 });
@@ -152,9 +146,17 @@ router.post("/", async (req, res) => {
   try {
     const { question, category, options, answer } = req.body;
 
+    if (!question || !category || !options || !answer) {
+      return res.status(400).json({ msg: "Question, category, options, and answer are required" });
+    }
+
+    if (!DEFAULT_CATEGORIES.includes(category.trim())) {
+      return res.status(400).json({ msg: "Invalid category" });
+    }
+
     const newQuestion = new Question({
       question,
-      category: category?.trim() || "General",
+      category: category.trim(),
       options,
       answer,
     });
