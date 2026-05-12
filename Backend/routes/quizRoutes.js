@@ -25,118 +25,101 @@ router.get("/categories", async (req, res) => {
 
 const SEED_QUESTIONS = [
   {
-    question: "Which keyword is used to declare a variable that can be reassigned in JavaScript?",
+    question: "What is JavaScript?",
     category: "Programming",
-    options: ["const", "let", "static", "final"],
-    answer: "let",
+    options: ["Programming language", "Database", "Operating system", "Image editor"],
+    answer: "Programming language",
   },
   {
-    question: "What does a function return by default in JavaScript when no return statement is used?",
+    question: "Which symbol is used for addition?",
     category: "Programming",
-    options: ["null", "0", "undefined", "false"],
-    answer: "undefined",
+    options: ["+", "-", "*", "/"],
+    answer: "+",
   },
   {
-    question: "Which data structure works on the LIFO principle?",
+    question: "What is a variable used for?",
     category: "Programming",
-    options: ["Queue", "Stack", "Array", "Tree"],
-    answer: "Stack",
+    options: ["Storing data", "Painting screens", "Charging a laptop", "Opening a door"],
+    answer: "Storing data",
   },
   {
-    question: "What is the purpose of a loop in programming?",
+    question: "Which value means true or false?",
     category: "Programming",
-    options: ["Repeat code", "Style a page", "Store images", "Encrypt passwords"],
-    answer: "Repeat code",
+    options: ["Boolean", "Image", "Folder", "Button"],
+    answer: "Boolean",
   },
   {
-    question: "Which symbol is commonly used for strict equality in JavaScript?",
+    question: "What does a loop do?",
     category: "Programming",
-    options: ["=", "==", "===", "!="],
-    answer: "===",
+    options: ["Repeats code", "Deletes files", "Changes monitor color", "Turns off Wi-Fi"],
+    answer: "Repeats code",
   },
   {
-    question: "What is React?",
+    question: "What does HTML create?",
     category: "Web Development",
-    options: ["Library", "Language", "Database", "OS"],
-    answer: "Library",
+    options: ["Page structure", "Computer virus", "Laptop battery", "Internet bill"],
+    answer: "Page structure",
   },
   {
-    question: "CSS is used for?",
+    question: "What does CSS change?",
     category: "Web Development",
-    options: ["Styling", "Logic", "Database", "Server"],
-    answer: "Styling",
+    options: ["Page style", "Mouse speed", "Phone volume", "Keyboard language"],
+    answer: "Page style",
   },
   {
-    question: "Which HTML tag is used to create a hyperlink?",
+    question: "Which tag is used for a paragraph in HTML?",
     category: "Web Development",
-    options: ["<link>", "<a>", "<href>", "<url>"],
-    answer: "<a>",
+    options: ["<p>", "<img>", "<button>", "<table>"],
+    answer: "<p>",
   },
   {
-    question: "Which HTTP method is commonly used to create new data?",
+    question: "Which tag is used to show an image?",
     category: "Web Development",
-    options: ["GET", "POST", "DELETE", "PATCH"],
-    answer: "POST",
+    options: ["<img>", "<p>", "<h1>", "<div>"],
+    answer: "<img>",
   },
   {
-    question: "What does API stand for?",
+    question: "What is a website opened in?",
     category: "Web Development",
-    options: [
-      "Application Programming Interface",
-      "Advanced Page Index",
-      "Applied Program Internet",
-      "Application Page Input",
-    ],
-    answer: "Application Programming Interface",
+    options: ["Browser", "Calculator", "Camera", "Notepad only"],
+    answer: "Browser",
   },
   {
-    question: "What does a firewall help protect against?",
+    question: "What should you keep secret?",
     category: "Cyber Security",
-    options: ["Unauthorized access", "Page styling", "Code formatting", "Image resizing"],
-    answer: "Unauthorized access",
+    options: ["Password", "Favorite color", "Weather", "Screen size"],
+    answer: "Password",
   },
   {
-    question: "What is phishing?",
+    question: "What is a strong password?",
     category: "Cyber Security",
-    options: ["A social engineering attack", "A CSS framework", "A database query", "A browser cache"],
-    answer: "A social engineering attack",
+    options: ["Long and unique", "Only your name", "12345", "password"],
+    answer: "Long and unique",
   },
   {
-    question: "Which practice makes passwords stronger?",
+    question: "What should you do before clicking a strange link?",
     category: "Cyber Security",
-    options: ["Using personal names", "Reusing passwords", "Using long unique passwords", "Sharing passwords"],
-    answer: "Using long unique passwords",
+    options: ["Check if it is safe", "Click quickly", "Share it with everyone", "Ignore the sender"],
+    answer: "Check if it is safe",
   },
   {
-    question: "What does HTTPS add to HTTP?",
+    question: "What does antivirus software help find?",
     category: "Cyber Security",
-    options: ["Encryption", "More colors", "Faster images", "Extra HTML tags"],
-    answer: "Encryption",
+    options: ["Malware", "Wall color", "Printer paper", "Music volume"],
+    answer: "Malware",
   },
   {
-    question: "What is two-factor authentication used for?",
+    question: "What should you do on a shared computer after using an account?",
     category: "Cyber Security",
-    options: [
-      "Adding an extra login verification step",
-      "Writing CSS faster",
-      "Compressing files",
-      "Creating databases",
-    ],
-    answer: "Adding an extra login verification step",
+    options: ["Log out", "Save password", "Leave it open", "Turn brightness up"],
+    answer: "Log out",
   },
 ];
 
 // SEED sample questions
 router.get("/seed", async (req, res) => {
-  await Promise.all(
-    SEED_QUESTIONS.map((seedQuestion) =>
-      Question.findOneAndUpdate(
-        { question: seedQuestion.question },
-        seedQuestion,
-        { upsert: true, returnDocument: "after", setDefaultsOnInsert: true }
-      )
-    )
-  );
+  await Question.deleteMany({ category: { $in: DEFAULT_CATEGORIES } });
+  await Question.insertMany(SEED_QUESTIONS);
 
   res.json({ msg: "Questions inserted", count: SEED_QUESTIONS.length });
 });
