@@ -1,10 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import API_URL from "../api";
 
 function Dashboard() {
   const navigate = useNavigate();
   const username = localStorage.getItem("username");
   const email = localStorage.getItem("email");
+  const [levelInfo, setLevelInfo] = useState({
+    xp: 0,
+    level: 1,
+    currentLevelXp: 0,
+    nextLevelXp: 100,
+  });
+
+  useEffect(() => {
+    if (!email) return;
+
+    axios
+      .get(`${API_URL}/api/score/profile/${encodeURIComponent(email)}`)
+      .then((res) => {
+        if (res.data.levelInfo) {
+          setLevelInfo(res.data.levelInfo);
+        }
+      })
+      .catch((err) => console.log(err));
+  }, [email]);
 
   const logout = () => {
     localStorage.clear();
@@ -42,6 +63,22 @@ function Dashboard() {
             <p className="text-sm opacity-70">{email}</p>
           </div>
         </div>
+
+        <div className="mt-4 rounded-lg bg-white/10 p-4 text-white">
+          <div className="mb-2 flex items-center justify-between">
+            <span className="font-semibold">Level {levelInfo.level}</span>
+            <span className="text-sm text-cyan-200">{levelInfo.xp} XP</span>
+          </div>
+          <div className="h-3 overflow-hidden rounded-full bg-slate-700">
+            <div
+              className="h-full rounded-full bg-cyan-400"
+              style={{ width: `${Math.min((levelInfo.currentLevelXp / levelInfo.nextLevelXp) * 100, 100)}%` }}
+            ></div>
+          </div>
+          <p className="mt-2 text-sm text-gray-300">
+            {levelInfo.currentLevelXp} / {levelInfo.nextLevelXp} XP to next level
+          </p>
+        </div>
       </div>
 
       <div className="bg-white/10 backdrop-blur-lg rounded-xl p-4 border border-white/20">
@@ -58,6 +95,13 @@ function Dashboard() {
             className="flex-1 bg-green-500 hover:bg-green-600 p-3 rounded-lg text-white transition"
           >
             Leaderboard
+          </button>
+
+          <button
+            onClick={() => navigate("/achievements")}
+            className="flex-1 bg-cyan-500 hover:bg-cyan-600 p-3 rounded-lg text-white transition"
+          >
+            Achievements
           </button>
         </div>
       </div>

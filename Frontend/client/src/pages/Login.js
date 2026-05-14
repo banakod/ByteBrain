@@ -8,7 +8,9 @@ function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e?.preventDefault();
+
     try {
       const res = await axios.post(`${API_URL}/api/auth/login`, {
         email,
@@ -36,7 +38,10 @@ function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-800">
       
-       <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-2xl shadow-2xl w-[600px]">
+       <form
+         onSubmit={handleLogin}
+         className="bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-2xl shadow-2xl w-[600px]"
+       >
         
         <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-2 tracking-wide bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent drop-shadow-lg hover:scale-105 transition duration-300">ByteBrain</h1>
         <p className="text-center text-gray-300 text-sm md:text-base mb-6 italic tracking-wide">Train your brain. Upgrade your logic.</p>
@@ -59,7 +64,7 @@ function Login() {
         />
 
         <button
-          onClick={handleLogin}
+          type="submit"
           className="w-full p-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition"
         >
           Login
@@ -74,7 +79,7 @@ function Login() {
             Signup
           </span>
         </p>
-      </div>
+      </form>
     </div>
   );
 }

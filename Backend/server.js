@@ -21,9 +21,24 @@ app.use("/api/score", scoreRoutes);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/auth", authRoutes);
 
-// DB CONNECT
-mongoose.connect(MONGO_URI)
-  .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+async function startServer() {
+  try {
+    await mongoose.connect(MONGO_URI, {
+      serverSelectionTimeoutMS: 5000,
+    });
 
-app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+    console.log("MongoDB Connected");
+    app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+  } catch (err) {
+    console.error("MongoDB connection failed:", err.message);
+
+    if (err.message.includes("ECONNREFUSED")) {
+      console.error("MongoDB is not running on localhost:27017.");
+      console.error("Fix: open PowerShell as Administrator and run: net start MongoDB");
+    }
+
+    process.exit(1);
+  }
+}
+
+startServer();

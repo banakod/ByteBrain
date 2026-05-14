@@ -9,6 +9,7 @@ import Quiz from "./pages/Quiz";
 import Result from "./pages/Result";
 import Leaderboard from "./pages/Leaderboard";
 import Admin from "./pages/Admin";
+import Achievements from "./pages/Achievements";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <Route path="/quiz" element={<Quiz />} />
       <Route path="/result" element={<Result />} />
       <Route path="/leaderboard" element={<Leaderboard />} />
+      <Route path="/achievements" element={<Achievements />} />
       <Route path="/admin" element={<Admin />} />
     </Routes>
   );
